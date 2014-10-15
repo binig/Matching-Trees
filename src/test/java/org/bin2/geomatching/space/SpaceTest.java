@@ -2,7 +2,7 @@ package org.bin2.geomatching.space;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;
-import junit.framework.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -28,7 +28,7 @@ public class SpaceTest {
             for (int i = 0; i < c.length; i++) {
                 double gap = ranges[i].upperEndpoint() -ranges[i].lowerEndpoint();
                 maxGap = Math.max(gap,maxGap);
-                Assert.assertTrue( ranges[i].toString()  + "  " + c[i], ranges[i].contains(c[i]));
+                Assert.assertTrue(ranges[i].contains(c[i]),ranges[i].toString() + "  " + c[i]);
             }
         }
         //System.out.println(maxGap);
