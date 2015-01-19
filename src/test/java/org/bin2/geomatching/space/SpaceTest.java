@@ -13,12 +13,12 @@ public class SpaceTest {
     @Test
     public void testBuildIndex() {
         SpaceDefinition sd = new SpaceDefinition(ImmutableList.of(
-                new AxisDefinition(10,0),
-                new AxisDefinition(10,0),
-                new AxisDefinition(10,0),
-        new AxisDefinition(10,0),
-                new AxisDefinition(10,0),
-                new AxisDefinition(10,0)
+                new ContinuousAxisDefinition(10,0),
+                new ContinuousAxisDefinition(10,0),
+                new ContinuousAxisDefinition(10,0),
+        new ContinuousAxisDefinition(10,0),
+                new ContinuousAxisDefinition(10,0),
+                new ContinuousAxisDefinition(10,0)
                 ));
         double[][] coords = new double[][]{{9,6,7,9,6,7},{0,0,0,9,6,7},{10,10,10,9,6,7},{5,10,3,9,6,7},{1.2344d,4.3584543d,7,9,6,7}};
         double maxGap = 0;

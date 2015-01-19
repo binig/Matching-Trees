@@ -15,3 +15,10 @@ them the closest offer to what they want, not the exact offer because it may not
 For example i want a mobile abo with iphone 5 or better phone, for 40euro a month and 12 month period.
 We can put each criteria on an axis even use some weight on the data and then just use a geo n dimension index to get the closest offer.
 
+1srt implemtation
+=================
+Continious axis no weight
+our test impl would be the time to go to a shop and the price of the offer and time 
+
+
+Just realized this was called a R-tree 

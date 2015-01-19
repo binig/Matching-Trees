@@ -9,7 +9,7 @@ import java.util.List;
  * Created by benoitroger on 11/07/14.
  */
 public class SpaceDefinition {
-    private final ImmutableList<AxisDefinition> axis;
+    private final ImmutableList<ContinuousAxisDefinition> axis;
     private final int numberOfDimension;
     private final int nbSplits;
     private final double maxValue;
@@ -32,13 +32,13 @@ public class SpaceDefinition {
         }
     }
 
-    public SpaceDefinition(List<AxisDefinition> axis) {
+    public SpaceDefinition(List<ContinuousAxisDefinition> axis) {
         this.axis = ImmutableList.copyOf(axis);
         this.numberOfDimension = this.axis.size();
         this.nbSplits = Long.SIZE/numberOfDimension;
         double max=Double.MIN_VALUE;
         double min=Double.MAX_VALUE;
-        for(AxisDefinition a:axis) {
+        for(ContinuousAxisDefinition a:axis) {
             max = Math.max(a.getMaxValue(), max);
             min = Math.min(a.getMinValue(),min);
         }
@@ -46,11 +46,11 @@ public class SpaceDefinition {
         this.minValue = min;
     }
 
-    public SpaceDefinition(AxisDefinition[] axis) {
+    public SpaceDefinition(ContinuousAxisDefinition[] axis) {
         this(ImmutableList.copyOf(axis));
     }
 
-    public List<AxisDefinition> getAxis() {
+    public List<ContinuousAxisDefinition> getAxis() {
         return axis;
     }
 
@@ -66,7 +66,7 @@ public class SpaceDefinition {
     public long buildIndex(double[] coords) {
         long index=0;
         for (int dim=0;dim<this.numberOfDimension;dim++) {
-            final AxisDefinition axisDefinition=  axis.get(dim);
+            final ContinuousAxisDefinition axisDefinition=  axis.get(dim);
             final double coord = coords[dim];
             double max = axisDefinition.getMaxValue();
             double min = axisDefinition.getMinValue();
@@ -89,7 +89,7 @@ public class SpaceDefinition {
         SplitDefinition[] comp = new SplitDefinition[Long.SIZE];
         int axis =0;
 
-        AxisDefinition def = getAxis().get(axis);
+        ContinuousAxisDefinition def = getAxis().get(axis);
         for (int i=0;i<comp.length;i++) {
             int limitAxis = axis + this.numberOfDimension;
             while (!hasSplit(def, axis)&&axis<limitAxis) {
@@ -101,7 +101,7 @@ public class SpaceDefinition {
         }
         return comp;
     }
-    private boolean hasSplit(AxisDefinition def, int axis) {
+    private boolean hasSplit(ContinuousAxisDefinition def, int axis) {
         int split = axis/numberOfDimension;
         // we need to check if the split is kind of the same around the value
         //int ranges = 1<<(split+1);
@@ -117,7 +117,7 @@ public class SpaceDefinition {
         Range<Double>[] ranges = new Range[this.numberOfDimension];
         byte[] found = new byte[Long.SIZE];
         for (int dim = 0; dim < this.numberOfDimension; dim++) {
-            final AxisDefinition axisDefinition=  axis.get(dim);
+            final ContinuousAxisDefinition axisDefinition=  axis.get(dim);
             double max = axisDefinition.getMaxValue();
             double min = axisDefinition.getMinValue();
             for (int i = 0; i < nbSplits; i++) {
