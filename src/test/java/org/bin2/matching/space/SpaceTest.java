@@ -1,4 +1,4 @@
-package org.bin2.geomatching.space;
+package org.bin2.matching.space;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Range;

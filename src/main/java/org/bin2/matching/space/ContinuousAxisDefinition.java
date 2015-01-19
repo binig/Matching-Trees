@@ -1,6 +1,4 @@
-package org.bin2.geomatching.space;
-
-import com.google.common.collect.ImmutableList;
+package org.bin2.matching.space;
 
 /**
  * Created by benoitroger on 11/07/14.

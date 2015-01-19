@@ -1,10 +1,10 @@
-package org.bin2.geomatching;
+package org.bin2.matching;
 
 import com.google.common.base.Function;
 import com.google.common.base.Stopwatch;
-import org.bin2.geomatching.context.ContextEntry;
-import org.bin2.geomatching.context.MatchingContext;
-import org.bin2.geomatching.context.SearchCriteria;
+import org.bin2.matching.context.ContextEntry;
+import org.bin2.matching.context.MatchingContext;
+import org.bin2.matching.context.SearchCriteria;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

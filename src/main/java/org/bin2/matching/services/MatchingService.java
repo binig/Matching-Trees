@@ -1,4 +1,4 @@
-package org.bin2.geomatching.services;
+package org.bin2.matching.services;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

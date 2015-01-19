@@ -1,4 +1,4 @@
-package org.bin2.geomatching;
+package org.bin2.matching;
 
 import java.util.Random;
 

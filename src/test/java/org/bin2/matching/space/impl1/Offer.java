@@ -1,4 +1,4 @@
-package org.bin2.geomatching.space.impl1;
+package org.bin2.matching.space.impl1;
 
 /**
  * lets assume the cost by minute to the shop would be 20 cents

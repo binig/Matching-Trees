@@ -1,4 +1,4 @@
-package org.bin2.geomatching.context;
+package org.bin2.matching.context;
 
 /**
  * Created by benoitroger on 28/03/14.

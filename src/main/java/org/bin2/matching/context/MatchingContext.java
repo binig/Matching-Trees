@@ -1,4 +1,4 @@
-package org.bin2.geomatching.context;
+package org.bin2.matching.context;
 
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;

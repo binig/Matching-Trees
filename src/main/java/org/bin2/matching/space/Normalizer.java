@@ -1,6 +1,4 @@
-package org.bin2.geomatching.space;
-
-import java.math.BigDecimal;
+package org.bin2.matching.space;
 
 /**
  * Created by benoitroger on 17/10/14.

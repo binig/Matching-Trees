@@ -1,4 +1,4 @@
-package org.bin2.geomatching.space;
+package org.bin2.matching.space;
 
 /**
  * Created by benoitroger on 17/10/14.
