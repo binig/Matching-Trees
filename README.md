@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/binig/geomatching.svg?branch=master)](https://travis-ci.org/binig/Matching-Trees)
-[![Coverage Status](https://img.shields.io/coveralls/binig/geomatching.svg)](https://coveralls.io/r/binig/Matching-Trees)
+[![Build Status](https://travis-ci.org/binig/Matching-Trees.svg?branch=master)](https://travis-ci.org/binig/Matching-Trees)
+[![Coverage Status](https://img.shields.io/coveralls/binig/Matching-Trees.svg)](https://coveralls.io/r/binig/Matching-Trees)
 
 geomatching
 ===========
