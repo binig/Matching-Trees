@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/binig/geomatching.svg?branch=master)](https://travis-ci.org/binig/geomatching)
-[![Coverage Status](https://img.shields.io/coveralls/binig/geomatching.svg)](https://coveralls.io/r/binig/geomatching)
+[![Build Status](https://travis-ci.org/binig/geomatching.svg?branch=master)](https://travis-ci.org/binig/Matching-Trees)
+[![Coverage Status](https://img.shields.io/coveralls/binig/geomatching.svg)](https://coveralls.io/r/binig/Matching-Trees)
 
 geomatching
 ===========
@@ -15,13 +15,10 @@ them the closest offer to what they want, not the exact offer because it may not
 For example i want a mobile abo with iphone 5 or better phone, for 40euro a month and 12 month period.
 We can put each criteria on an axis even use some weight on the data and then just use a geo n dimension index to get the closest offer.
 
-Just realized this was called a R-tree 
-
-1st implemtation
+1srt implemtation
 =================
 Continious axis no weight
 our test impl would be the time to go to a shop and the price of the offer and time 
 
-Next step 
-==========
-move to hilbert curve
+
+Just realized this was called a R-tree 
