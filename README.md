@@ -21,4 +21,6 @@ Continious axis no weight
 our test impl would be the time to go to a shop and the price of the offer and time 
 
 
-Just realized this was called a R-tree 
+Just realized this was called a R-tree
+
+ http://blog.notdot.net/2009/11/Damn-Cool-Algorithms-Spatial-indexing-with-Quadtrees-and-Hilbert-Curves
