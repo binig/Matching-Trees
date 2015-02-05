@@ -1,4 +1,4 @@
-package org.bin2.matching.space;
+package org.bin2.matching;
 
 /**
  * Created by benoitroger on 05/02/15.

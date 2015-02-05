@@ -1,6 +1,4 @@
-package org.bin2.matching.space;
-
-import com.google.common.base.Preconditions;
+package org.bin2.matching;
 
 import java.util.Arrays;
 
@@ -42,7 +40,7 @@ public class QuadtreeIndex implements Index<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o, boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
-        return IndexUtils.compare(this,o,autoExpendIndex,maxOrder, indexOnly);
+        return IndexUtils.compare(this, o, autoExpendIndex, maxOrder, indexOnly);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.bin2.matching.space;
+package org.bin2.matching;
 
 import com.google.common.base.Preconditions;
 
