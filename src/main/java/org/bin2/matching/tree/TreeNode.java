@@ -1,6 +1,4 @@
-package org.bin2.matching;
-
-import java.util.Comparator;
+package org.bin2.matching.tree;
 
 /**
  * Created by benoitroger on 19/01/15.

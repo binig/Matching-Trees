@@ -1,16 +1,21 @@
-package org.bin2.matching;
+package org.bin2.matching.tree;
 
-import java.util.Comparator;
+import java.util.function.Function;
 
 /**
  * Basic binary tree impl
+ *
+ *
  */
-public class TreeImpl<K extends Comparable<K>,T> {
+public class TreeImpl<K extends Index<K>,T> {
+    //todo implement get by range
+    //todo move to red black tree
+    private TreeSpec treeSpec;
+    private Function<T, K> toIndex;
+    private TreeNode<K,T> root;
 
-    TreeNode<K,T> root;
-
-    public void put(K key,T value) {
-        root = put(root, key, value);
+    public void put(T value) {
+        root = put(root, toIndex.apply(value), value);
     }
 
     public T get(K key) {

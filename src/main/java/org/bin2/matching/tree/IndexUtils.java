@@ -1,8 +1,6 @@
-package org.bin2.matching;
+package org.bin2.matching.tree;
 
 import com.google.common.base.Preconditions;
-
-import java.util.Arrays;
 
 /**
  * Created by benoitroger on 05/02/15.

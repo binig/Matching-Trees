@@ -1,5 +1,6 @@
 package org.bin2.matching;
 
+import org.bin2.matching.tree.TreeImpl;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -10,7 +11,7 @@ public class TreeImplTests {
 
     @Test
     public void testSimpleInsertGet() {
-        TreeImpl<Integer,Integer>  tree = new TreeImpl<>();
+        TreeImpl<Integer,Integer> tree = new TreeImpl<>();
         Assert.assertNull(tree.get(1));
         tree.put(1, 1);
         Assert.assertEquals(tree.get(1),new Integer(1));

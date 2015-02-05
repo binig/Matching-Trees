@@ -1,30 +1,28 @@
-package org.bin2.matching;
-
-import java.util.Arrays;
+package org.bin2.matching.tree;
 
 /**
  * Created by benoitroger on 05/02/15.
  */
 public class QuadtreeIndex implements Index<QuadtreeIndex> {
-    public static final int orderInc = 4;
+    private TreeSpec treeSpec;
+    private double[] coordinates;
 
-    double[] coordinates;
-    byte[] index;
-    int order;
+    private byte[] index;
+    private int order;
 
+    public QuadtreeIndex(TreeSpec treeSpec, double[] coordinates) {
+        this.treeSpec = treeSpec;
+        this.coordinates = coordinates;
+    }
 
     public void expendIndex(int order) {
-        //TODO impl
-
-
-        long index=0;
+        byte[] newIndex = new byte[(int)Math.ceil(coordinates.length*order/8d)];
         for (int dim=0;dim<this.coordinates.length;dim++) {
-           /* final ContinuousAxisDefinition axisDefinition=  axis.get(dim);
-            final double coord = coords[dim];
-            double max = axisDefinition.getMaxValue();
-            double min = axisDefinition.getMinValue();
+            final double coord = this.coordinates[dim];
+            double max = treeSpec.getMax()[dim];
+            double min =  treeSpec.getMin()[dim];
             double middle = min + (max-min)/2d;
-            for (int i = 0; i < nbSplits; i++) {
+            for (int i = 0; i < order; i++) {
                 boolean b =coord>=middle;
                 if (b) {
                     min = middle;
@@ -32,9 +30,13 @@ public class QuadtreeIndex implements Index<QuadtreeIndex> {
                     max = middle;
                 }
                 middle = min + (max-min)/2d;
-                index |= (b?1l:0l)<<((nbSplits-i-1)*numberOfDimension+dim);
-            }*/
+                int bitPos = ((order-i-1)*coordinates.length+dim);
+                int idx = bitPos/8;
+                int localBitPos = bitPos%8;
+                newIndex[idx] |= (b?1:0)<<localBitPos;
+            }
         }
+        this.index=newIndex;
 
     }
 
