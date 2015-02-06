@@ -3,11 +3,11 @@ package org.bin2.matching.tree;
 /**
  * Created by benoitroger on 05/02/15.
  */
-public class QuadtreeIndex implements Index<QuadtreeIndex> {
+public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
     private TreeSpec treeSpec;
     private double[] coordinates;
 
-    private byte[] index;
+    private int[] index;
     private int order;
 
     public QuadtreeIndex(TreeSpec treeSpec, double[] coordinates) {
@@ -16,7 +16,7 @@ public class QuadtreeIndex implements Index<QuadtreeIndex> {
     }
 
     public void expendIndex(int order) {
-        byte[] newIndex = new byte[(int)Math.ceil(coordinates.length*order/8d)];
+        int[] newIndex = new int[(int) Math.ceil(coordinates.length * order / ((double) Integer.SIZE))];
         for (int dim=0;dim<this.coordinates.length;dim++) {
             final double coord = this.coordinates[dim];
             double max = treeSpec.getMax()[dim];
@@ -31,12 +31,13 @@ public class QuadtreeIndex implements Index<QuadtreeIndex> {
                 }
                 middle = min + (max-min)/2d;
                 int bitPos = ((order-i-1)*coordinates.length+dim);
-                int idx = bitPos/8;
-                int localBitPos = bitPos%8;
+                int idx = bitPos / Integer.SIZE;
+                int localBitPos = bitPos % Integer.SIZE;
                 newIndex[idx] |= (b?1:0)<<localBitPos;
             }
         }
         this.index=newIndex;
+        this.order = order;
 
     }
 
@@ -56,12 +57,17 @@ public class QuadtreeIndex implements Index<QuadtreeIndex> {
     }
 
     @Override
-    public byte[] getIndex() {
+    public int[] getIndex() {
         return index;
     }
 
     @Override
     public int compareTo(QuadtreeIndex o) {
         return compareTo(o,true,40,false);
+    }
+
+    @Override
+    public int getNumberOfSignificantBits(int order) {
+        return coordinates.length * order;
     }
 }

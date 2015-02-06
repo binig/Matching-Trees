@@ -2,14 +2,17 @@ package org.bin2.matching.tree;
 
 import com.google.common.base.Preconditions;
 
+import java.util.function.Function;
+
 /**
  * Created by benoitroger on 05/02/15.
  */
 public class IndexUtils {
 
-    public static  <T>  int  compare(Index idx1, Index idx2 , boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
+    public static <T> int compare(ComparableIndex idx1, ComparableIndex idx2, boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
         Preconditions.checkNotNull(idx1);
         Preconditions.checkNotNull(idx2);
+        final int orderInc = 4;
         if(idx1==idx2) return 0;
         //TODO it may be worth to not check equality before since we do not expect much equality ?
         int innerValueComp = idx1.innerValuesCompare(idx2);
@@ -17,16 +20,33 @@ public class IndexUtils {
 
         int idx=0;
         int currOrder = Math.min(idx1.getOrder(),idx2.getOrder());
+        if (currOrder == 0) {
+            currOrder += orderInc;
+            expendOrder(idx1, idx2, currOrder);
+        }
+        int[] idx1Byte = idx1.getIndex();
+        int[] idx2Byte = idx2.getIndex();
+        int signigicantBits = idx1.getNumberOfSignificantBits(currOrder);
+        Preconditions.checkArgument(idx1Byte.length == idx2Byte.length, "same order index should be of the same size");
         do  {
-            while (idx < idx1.getIndex().length && idx < idx2.getIndex().length) {
-                int comp = Byte.compare(idx1.getIndex()[idx],idx2.getIndex()[idx]);
+            while (idx < idx1Byte.length) {
+                // check for uncomplete byte when one idx has a != order
+                // should use a mask to clear the useless part of the bigger order comp
+                int index1 = idx1Byte[idx];
+                int index2 = idx2Byte[idx];
+                if (signigicantBits < Integer.SIZE) {
+                    int mask = ~((1 << (Integer.SIZE - signigicantBits)) - 1);
+                    index1 &= mask;
+                    index2 &= mask;
+                }
+                int comp = Integer.compareUnsigned(index1, index2);
                 if (comp!=0) return comp;
+                signigicantBits -= Integer.SIZE;
                 idx++;
             }
             if (autoExpendIndex) {
-                currOrder += 4;
-                idx1.expendIndex(currOrder);
-                idx2.expendIndex(currOrder);
+                currOrder += orderInc;
+                expendOrder(idx1, idx2, currOrder);
             }
         } while(autoExpendIndex&&currOrder<maxOrder);
         if (indexOnly) {
@@ -34,6 +54,11 @@ public class IndexUtils {
         }   else {
             return innerValueComp;
         }
+    }
+
+    private static void expendOrder(ComparableIndex idx1, ComparableIndex idx2, int currOrder) {
+        idx1.expendIndex(currOrder);
+        idx2.expendIndex(currOrder);
     }
 
 
@@ -47,4 +72,24 @@ public class IndexUtils {
     }
 
 
+    public static <T> Function<T, QuadtreeIndex> quadTreeIndex(TreeSpec treeSpec, CoordinateTransform<T> coordinateTransform) {
+        return new QuadtreeIndexFunction<>(treeSpec, coordinateTransform);
+
+    }
+
+    private static class QuadtreeIndexFunction<T> implements Function<T, QuadtreeIndex> {
+        private final CoordinateTransform<T> coordinateTransform;
+        private final TreeSpec treeSpec;
+
+        public QuadtreeIndexFunction(TreeSpec treeSpec, CoordinateTransform<T> coordinateTransform) {
+            this.coordinateTransform = coordinateTransform;
+            this.treeSpec = treeSpec;
+        }
+
+        @Override
+        public QuadtreeIndex apply(T t) {
+            double[] coords = coordinateTransform.toCoordinate(t);
+            return new QuadtreeIndex(treeSpec, coords);
+        }
+    }
 }
