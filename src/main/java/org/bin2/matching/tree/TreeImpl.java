@@ -25,24 +25,36 @@ public class TreeImpl<K extends Index<K>,T> {
         root.setColor(TreeNode.BLACK);
     }
 
+
+    public boolean containsValue(T value) {
+        return contains(toIndex.apply(value));
+    }
+
     public T get(K key) {
         return get(root,key);
     }
 
-    private T get(TreeNode<K, T> node, K key) {
-        if (node == null) return null;
-        int comp = node.getKey().compareTo(key);
-        if (comp==0) return node.getValue();
-        return get(comp<0?node.getRight():node.getLeft(),key);
-    }
 
+    private T get(TreeNode<K, T> node, K key) {
+        while (node != null) {
+            int cmp = key.compareTo(node.getKey());
+            if (cmp < 0) {
+                node = node.getLeft();
+            } else if (cmp > 0) {
+                node = node.getRight();
+            } else {
+                return node.getValue();
+            }
+        }
+        return null;
+    }
     private TreeNode<K,T> put(TreeNode<K,T> node,K key, T value) {
 
         if (node == null) return new TreeNode<>(key, value, TreeNode.RED, 1);
-        int comp = node.getKey().compareTo(key);
+        int comp = key.compareTo(node.getKey());
         if (comp==0) {
             node.setValue(value);
-        } else  if(comp<0)  {
+        } else if (comp > 0) {
             node.setRight(put(node.getRight(), key,value));
         } else {
             node.setLeft(put(node.getLeft(),key,value));
@@ -223,16 +235,24 @@ public class TreeImpl<K extends Index<K>,T> {
         else return min(x.getLeft());
     }
 
-    public static <K extends Index<K>, T> Builder<K, T> newBuilder() {
-        return new Builder();
+
+    @Override
+    public String toString() {
+        return "TreeImpl{" +
+                root +
+                '}';
     }
 
-    public static class Builder<K extends Index<K>, T> {
+    public static <K extends Index<K>, T> QuadtreeBuilder<K, T> newQuadtreeBuilder() {
+        return new QuadtreeBuilder();
+    }
+
+    public static class QuadtreeBuilder<K extends Index<K>, T> {
         private double[] max;
         private double[] min;
         private CoordinateTransform<T> coordinateTransform;
 
-        private Builder() {
+        private QuadtreeBuilder() {
 
         }
 
@@ -245,18 +265,59 @@ public class TreeImpl<K extends Index<K>,T> {
             return new TreeImpl(treeSpec, IndexUtils.quadTreeIndex(treeSpec, coordinateTransform));
         }
 
-        public Builder<K, T> coordinateTransform(CoordinateTransform<T> transform) {
+        public QuadtreeBuilder<K, T> coordinateTransform(CoordinateTransform<T> transform) {
             this.coordinateTransform = transform;
             return this;
         }
 
 
-        public Builder<K, T> max(double[] max) {
+        public QuadtreeBuilder<K, T> max(double[] max) {
             this.max = max;
             return this;
         }
 
-        public Builder<K, T> min(double[] min) {
+        public QuadtreeBuilder<K, T> min(double[] min) {
+            this.min = min;
+            return this;
+        }
+
+    }
+
+
+    public static <K extends Index<K>, T> CustomIndexBuilder<K, T> newCustomIndexBuilder() {
+        return new CustomIndexBuilder();
+    }
+
+    public static class CustomIndexBuilder<K extends Index<K>, T> {
+        private double[] max;
+        private double[] min;
+        private Function<T, K> function;
+
+        private CustomIndexBuilder() {
+
+        }
+
+        public TreeImpl<K, T> build() {
+            Preconditions.checkNotNull(function, "index function is mandatory  ");
+            Preconditions.checkNotNull(max, "should define the limite of the space coordinates by providing max values");
+            Preconditions.checkNotNull(min, "should define the limite of the space coordinates by providing min values");
+            Preconditions.checkArgument(max.length == min.length, "size of the max and min are differents");
+            TreeSpec treeSpec = new TreeSpec(max, min);
+            return new TreeImpl(treeSpec, function);
+        }
+
+        public CustomIndexBuilder<K, T> indexFunction(Function<T, K> transform) {
+            this.function = transform;
+            return this;
+        }
+
+
+        public CustomIndexBuilder<K, T> max(double[] max) {
+            this.max = max;
+            return this;
+        }
+
+        public CustomIndexBuilder<K, T> min(double[] min) {
             this.min = min;
             return this;
         }

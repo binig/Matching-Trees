@@ -1,5 +1,7 @@
 package org.bin2.matching.tree;
 
+import java.util.Arrays;
+
 /**
  * Created by benoitroger on 05/02/15.
  */
@@ -16,6 +18,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
     }
 
     public void expendIndex(int order) {
+        if (order < this.order) return;
         int[] newIndex = new int[(int) Math.ceil(coordinates.length * order / ((double) Integer.SIZE))];
         for (int dim=0;dim<this.coordinates.length;dim++) {
             final double coord = this.coordinates[dim];
@@ -31,8 +34,8 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
                 }
                 middle = min + (max-min)/2d;
                 int bitPos = ((order-i-1)*coordinates.length+dim);
-                int idx = bitPos / Integer.SIZE;
-                int localBitPos = bitPos % Integer.SIZE;
+                int idx = newIndex.length - 1 - (bitPos / Integer.SIZE);
+                int localBitPos = Integer.SIZE - bitPos % Integer.SIZE;
                 newIndex[idx] |= (b?1:0)<<localBitPos;
             }
         }
@@ -63,11 +66,22 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o) {
-        return compareTo(o,true,40,false);
+        return compareTo(o, true, 128, false);
     }
 
     @Override
     public int getNumberOfSignificantBits(int order) {
         return coordinates.length * order;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder b = new StringBuilder();
+        if (index != null)
+            for (int i : index) {
+                b.append(Integer.toHexString(i));
+            }
+
+        return b.toString() + Arrays.toString(coordinates);
     }
 }

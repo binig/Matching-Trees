@@ -76,4 +76,14 @@ public class TreeNode<K extends Comparable<K>,T> {
     public void setKey(K key) {
         this.key = key;
     }
+
+    @Override
+    public String toString() {
+        return "TN{" +
+                key +
+                //  ", value=" + value +
+                ", l=" + left +
+                ", r=" + right +
+                '}';
+    }
 }
