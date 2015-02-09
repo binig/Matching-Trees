@@ -1,12 +1,14 @@
 package org.bin2.matching.tree;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
 
+import java.util.List;
 import java.util.function.Function;
 
 /**
  * Basic binary tree impl
- * inspired from http://algs4.cs.princeton.edu/33balanced/RedBlackBST.java.html
+ * //TODO http://en.wikipedia.org/wiki/Red%E2%80%93black_tree
  *
  */
 public class TreeImpl<K extends Index<K>,T> {
@@ -30,6 +32,27 @@ public class TreeImpl<K extends Index<K>,T> {
         return contains(toIndex.apply(value));
     }
 
+    public List<T> dfSvalue(T value) {
+        List<T> res = Lists.newArrayList();
+        dfSvalue(root, this.toIndex.apply(value), res);
+        return res;
+    }
+
+    private boolean dfSvalue(TreeNode<K, T> node, K key, List<T> res) {
+        if (node == null) {
+            return false;
+        } else if (node.getKey().compareTo(key) == 0) {
+            res.add(node.getValue());
+            return true;
+        } else if (dfSvalue(node.getLeft(), key, res)) {
+            res.add(node.getValue());
+            return true;
+        } else if (dfSvalue(node.getRight(), key, res)) {
+            res.add(node.getValue());
+            return true;
+        }
+        return false;
+    }
     public T get(K key) {
         return get(root,key);
     }
@@ -51,14 +74,10 @@ public class TreeImpl<K extends Index<K>,T> {
     private TreeNode<K,T> put(TreeNode<K,T> node,K key, T value) {
 
         if (node == null) return new TreeNode<>(key, value, TreeNode.RED, 1);
-        int comp = key.compareTo(node.getKey());
-        if (comp==0) {
-            node.setValue(value);
-        } else if (comp > 0) {
-            node.setRight(put(node.getRight(), key,value));
-        } else {
-            node.setLeft(put(node.getLeft(),key,value));
-        }
+        int cmp = key.compareTo(node.getKey());
+        if (cmp < 0) node.setLeft(put(node.getLeft(), key, value));
+        else if (cmp > 0) node.setRight(put(node.getRight(), key, value));
+        else node.setValue(value);
 
         // fix-up any right-leaning links
         if (isRed(node.getRight()) && !isRed(node.getLeft())) node = rotateLeft(node);
@@ -250,6 +269,8 @@ public class TreeImpl<K extends Index<K>,T> {
     public static class QuadtreeBuilder<K extends Index<K>, T> {
         private double[] max;
         private double[] min;
+        private int maxOrder = TreeSpec.DEFAULT_MAX_ORDER;
+        private int incOrder = TreeSpec.DEFAULT_INC_ORDER;
         private CoordinateTransform<T> coordinateTransform;
 
         private QuadtreeBuilder() {
@@ -261,7 +282,7 @@ public class TreeImpl<K extends Index<K>,T> {
             Preconditions.checkNotNull(max, "should define the limite of the space coordinates by providing max values");
             Preconditions.checkNotNull(min, "should define the limite of the space coordinates by providing min values");
             Preconditions.checkArgument(max.length == min.length, "size of the max and min are differents");
-            TreeSpec treeSpec = new TreeSpec(max, min);
+            TreeSpec treeSpec = new TreeSpec(max, min, maxOrder, incOrder);
             return new TreeImpl(treeSpec, IndexUtils.quadTreeIndex(treeSpec, coordinateTransform));
         }
 
@@ -270,6 +291,16 @@ public class TreeImpl<K extends Index<K>,T> {
             return this;
         }
 
+
+        public QuadtreeBuilder<K, T> maxOrder(int maxOrder) {
+            this.maxOrder = maxOrder;
+            return this;
+        }
+
+        public QuadtreeBuilder<K, T> incOrder(int incOrder) {
+            this.incOrder = incOrder;
+            return this;
+        }
 
         public QuadtreeBuilder<K, T> max(double[] max) {
             this.max = max;

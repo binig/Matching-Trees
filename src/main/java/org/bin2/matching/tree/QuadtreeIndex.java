@@ -6,6 +6,7 @@ import java.util.Arrays;
  * Created by benoitroger on 05/02/15.
  */
 public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
+
     private TreeSpec treeSpec;
     private double[] coordinates;
 
@@ -15,6 +16,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
     public QuadtreeIndex(TreeSpec treeSpec, double[] coordinates) {
         this.treeSpec = treeSpec;
         this.coordinates = coordinates;
+        expendIndex(treeSpec.getOrderInc());
     }
 
     public void expendIndex(int order) {
@@ -33,9 +35,9 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
                     max = middle;
                 }
                 middle = min + (max-min)/2d;
-                int bitPos = ((order-i-1)*coordinates.length+dim);
-                int idx = newIndex.length - 1 - (bitPos / Integer.SIZE);
-                int localBitPos = Integer.SIZE - bitPos % Integer.SIZE;
+                int bitPos = i * coordinates.length + dim;
+                int idx = bitPos / Integer.SIZE;
+                int localBitPos = Integer.SIZE - 1 - bitPos % Integer.SIZE;
                 newIndex[idx] |= (b?1:0)<<localBitPos;
             }
         }
@@ -46,7 +48,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o, boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
-        return IndexUtils.compare(this, o, autoExpendIndex, maxOrder, indexOnly);
+        return IndexUtils.compare(this, o, autoExpendIndex, maxOrder, treeSpec.getOrderInc(), indexOnly);
     }
 
     @Override
@@ -66,7 +68,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o) {
-        return compareTo(o, true, 128, false);
+        return compareTo(o, true, treeSpec.getMaxOrder(), false);
     }
 
     @Override

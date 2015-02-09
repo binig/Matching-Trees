@@ -9,10 +9,9 @@ import java.util.function.Function;
  */
 public class IndexUtils {
 
-    public static <T> int compare(ComparableIndex idx1, ComparableIndex idx2, boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
+    public static <T> int compare(ComparableIndex idx1, ComparableIndex idx2, boolean autoExpendIndex, int maxOrder, int orderInc, boolean indexOnly) {
         Preconditions.checkNotNull(idx1);
         Preconditions.checkNotNull(idx2);
-        final int orderInc = 12;
         if(idx1==idx2) return 0;
         //TODO it may be worth to not check equality before since we do not expect much equality ?
         int innerValueComp = idx1.innerValuesCompare(idx2);
@@ -26,26 +25,34 @@ public class IndexUtils {
         }
         int[] idx1Byte = idx1.getIndex();
         int[] idx2Byte = idx2.getIndex();
-        int signigicantBits = idx1.getNumberOfSignificantBits(currOrder);
+        int numberOfSignificantBits = idx1.getNumberOfSignificantBits(currOrder);
+        int startNOSB = numberOfSignificantBits;
         do  {
-            while (signigicantBits > 0) {
+            while (numberOfSignificantBits > 0) {
                 // check for uncomplete byte when one idx has a != order
                 // should use a mask to clear the useless part of the bigger order comp
                 int index1 = idx1Byte[idx];
                 int index2 = idx2Byte[idx];
-                if (signigicantBits < Integer.SIZE) {
-                    int mask = 1 << signigicantBits;
+                if (numberOfSignificantBits < Integer.SIZE) {
+                    int mask = ~((1 << (Integer.SIZE - numberOfSignificantBits)) - 1);
                     index1 &= mask;
                     index2 &= mask;
                 }
                 int comp = Integer.compareUnsigned(index1, index2);
                 if (comp!=0) return comp;
-                signigicantBits -= Integer.SIZE;
+                numberOfSignificantBits -= Integer.SIZE;
                 idx++;
             }
             if (autoExpendIndex) {
                 currOrder += orderInc;
                 expendOrder(idx1, idx2, currOrder);
+                idx--;
+                int newNOSB = idx1.getNumberOfSignificantBits(currOrder);
+                numberOfSignificantBits += Integer.SIZE + newNOSB - startNOSB;
+                startNOSB = newNOSB;
+                idx1Byte = idx1.getIndex();
+                idx2Byte = idx2.getIndex();
+
             }
         } while(autoExpendIndex&&currOrder<maxOrder);
         if (indexOnly) {
