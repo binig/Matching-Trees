@@ -3,7 +3,7 @@ package org.bin2.matching.tree;
 /**
  * Created by benoi_000 on 2/5/2015.
  */
-public class TreeSpec {
+public class IndexConfiguration {
     public static final int DEFAULT_MAX_ORDER = 20;
     public static final int DEFAULT_INC_ORDER = 5;
 
@@ -12,11 +12,11 @@ public class TreeSpec {
     private final int maxOrder;
     private final int orderInc;
 
-    public TreeSpec(double[] max, double[] min) {
+    public IndexConfiguration(double[] max, double[] min) {
         this(max, min, DEFAULT_MAX_ORDER, DEFAULT_INC_ORDER);
     }
 
-    public TreeSpec(double[] max, double[] min, final int maxOrder, int orderInc) {
+    public IndexConfiguration(double[] max, double[] min, final int maxOrder, int orderInc) {
         this.max = max;
         this.min = min;
         this.maxOrder = maxOrder;

@@ -7,16 +7,16 @@ import java.util.Arrays;
  */
 public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
-    private TreeSpec treeSpec;
+    private IndexConfiguration indexConfiguration;
     private double[] coordinates;
 
     private int[] index;
     private int order;
 
-    public QuadtreeIndex(TreeSpec treeSpec, double[] coordinates) {
-        this.treeSpec = treeSpec;
+    public QuadtreeIndex(IndexConfiguration indexConfiguration, double[] coordinates) {
+        this.indexConfiguration = indexConfiguration;
         this.coordinates = coordinates;
-        expendIndex(treeSpec.getOrderInc());
+        expendIndex(indexConfiguration.getOrderInc());
     }
 
     public void expendIndex(int order) {
@@ -24,8 +24,8 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
         int[] newIndex = new int[(int) Math.ceil(coordinates.length * order / ((double) Integer.SIZE))];
         for (int dim=0;dim<this.coordinates.length;dim++) {
             final double coord = this.coordinates[dim];
-            double max = treeSpec.getMax()[dim];
-            double min =  treeSpec.getMin()[dim];
+            double max = indexConfiguration.getMax()[dim];
+            double min = indexConfiguration.getMin()[dim];
             double middle = min + (max-min)/2d;
             for (int i = 0; i < order; i++) {
                 boolean b =coord>=middle;
@@ -48,7 +48,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o, boolean autoExpendIndex, int maxOrder, boolean indexOnly) {
-        return IndexUtils.compare(this, o, autoExpendIndex, maxOrder, treeSpec.getOrderInc(), indexOnly);
+        return IndexUtils.compare(this, o, autoExpendIndex, maxOrder, indexConfiguration.getOrderInc(), indexOnly);
     }
 
     @Override
@@ -68,7 +68,7 @@ public class QuadtreeIndex implements ComparableIndex<QuadtreeIndex> {
 
     @Override
     public int compareTo(QuadtreeIndex o) {
-        return compareTo(o, true, treeSpec.getMaxOrder(), false);
+        return compareTo(o, true, indexConfiguration.getMaxOrder(), false);
     }
 
     @Override

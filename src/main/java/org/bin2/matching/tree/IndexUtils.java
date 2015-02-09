@@ -46,12 +46,17 @@ public class IndexUtils {
             if (autoExpendIndex) {
                 currOrder += orderInc;
                 expendOrder(idx1, idx2, currOrder);
+                // we need to reprocess the previous step
+                //todo check if there is no overlap  ? for example 6 dimention and order 4
+                // we get the expended indexes
+                idx1Byte = idx1.getIndex();
+                idx2Byte = idx2.getIndex();
+                // rewind to previews state with an updated numberOfSignificantBits
                 idx--;
                 int newNOSB = idx1.getNumberOfSignificantBits(currOrder);
                 numberOfSignificantBits += Integer.SIZE + newNOSB - startNOSB;
                 startNOSB = newNOSB;
-                idx1Byte = idx1.getIndex();
-                idx2Byte = idx2.getIndex();
+
 
             }
         } while(autoExpendIndex&&currOrder<maxOrder);
@@ -78,24 +83,24 @@ public class IndexUtils {
     }
 
 
-    public static <T> Function<T, QuadtreeIndex> quadTreeIndex(TreeSpec treeSpec, CoordinateTransform<T> coordinateTransform) {
-        return new QuadtreeIndexFunction<>(treeSpec, coordinateTransform);
+    public static <T> Function<T, QuadtreeIndex> quadTreeIndex(IndexConfiguration indexConfiguration, CoordinateTransform<T> coordinateTransform) {
+        return new QuadtreeIndexFunction<>(indexConfiguration, coordinateTransform);
 
     }
 
     private static class QuadtreeIndexFunction<T> implements Function<T, QuadtreeIndex> {
         private final CoordinateTransform<T> coordinateTransform;
-        private final TreeSpec treeSpec;
+        private final IndexConfiguration indexConfiguration;
 
-        public QuadtreeIndexFunction(TreeSpec treeSpec, CoordinateTransform<T> coordinateTransform) {
+        public QuadtreeIndexFunction(IndexConfiguration indexConfiguration, CoordinateTransform<T> coordinateTransform) {
             this.coordinateTransform = coordinateTransform;
-            this.treeSpec = treeSpec;
+            this.indexConfiguration = indexConfiguration;
         }
 
         @Override
         public QuadtreeIndex apply(T t) {
             double[] coords = coordinateTransform.toCoordinate(t);
-            return new QuadtreeIndex(treeSpec, coords);
+            return new QuadtreeIndex(indexConfiguration, coords);
         }
     }
 }
