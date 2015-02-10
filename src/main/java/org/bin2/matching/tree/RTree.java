@@ -2,8 +2,7 @@ package org.bin2.matching.tree;
 
 import com.google.common.base.Preconditions;
 
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -11,7 +10,7 @@ import java.util.function.Function;
  */
 public class RTree<I extends Index<I>,V> {
 
-    private Map<I,V> map;
+    private SortedMap<I,V> map;
     private Function<V,I> toIndexFunction;
 
     public RTree(Function<V, I> toIndexFunction) {
@@ -33,6 +32,19 @@ public class RTree<I extends Index<I>,V> {
         I idx = toIndexFunction.apply(value);
         V v = map.get(idx);
         return v!=null&&v.equals(value);
+    }
+
+    public Collection<V> getValueArround(V value, int amount) {
+        //TODO
+        // we need to find the correct order and build the index range value
+        // if too much take smaller order
+        // take larger order
+        return Collections.EMPTY_LIST;
+    }
+
+    public Collection<V> getValueBetween(V value1, V value2) {
+        return map.subMap(toIndexFunction.apply(value1), toIndexFunction.apply(value2)).values();
+
     }
 
 

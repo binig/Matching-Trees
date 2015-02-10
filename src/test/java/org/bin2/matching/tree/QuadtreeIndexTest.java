@@ -3,10 +3,7 @@ package org.bin2.matching.tree;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.util.HashSet;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.function.Function;
 
 /**
@@ -88,6 +85,45 @@ public class QuadtreeIndexTest {
             Assert.assertTrue(rTree.contains(d), " object " + i + " not found " + d);
             i++;
         }
+
+    }
+
+    //@Test
+    public  void test2DcoordinateFind50Closest() {
+        double[][] data = new double[1000][];
+        Random r = new Random();
+
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new double[]{r.nextDouble(), r.nextDouble()};
+        }
+        double[] x = new double[]{r.nextDouble(), r.nextDouble()};
+        IndexConfiguration indexConfiguration = new IndexConfiguration(new double[]{1, 1}, new double[]{0, 0}, 20, 5);
+        TreeSet<double[]> treeSet = new TreeSet<>(new Comparator<double[]>() {
+            @Override
+            public int compare(double[] o1, double[] o2) {
+                double dist1 = (x[0]-o1[0])*(x[0]-o1[0])+(x[1]-o1[1])*(x[1]-o1[1]);
+                double dist2 = (x[0]-o2[0])*(x[0]-o2[0])+(x[1]-o2[1])*(x[1]-o2[1]);
+                int comp = Double.compare(dist1,dist2);
+                if (comp==0) {
+                    comp = Double.compare(o1[0],o2[0]);
+                }
+                if (comp==0) {
+                    comp = Double.compare(o1[1],o2[1]);
+                }
+                return comp;
+            }
+        });
+        RTree<QuadtreeIndex, double[] > rtree = RTree.<double[]>quadtreeBuilder()
+                .withConfiguration(indexConfiguration).withCoordinateTransform(d-> d).build();
+        for(double[] c:data) {
+            rtree.add(c);
+            treeSet.add(c);
+        }
+        Set<double[]> closeSet = new HashSet<>();
+        for(int i=0;i<50;i++){
+            closeSet.add(treeSet.pollFirst());
+        }
+        Assert.assertEquals(rtree.getValueArround(x,50),closeSet);
 
     }
 
