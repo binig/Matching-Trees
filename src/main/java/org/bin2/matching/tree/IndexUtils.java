@@ -81,26 +81,5 @@ public class IndexUtils {
         }
         return 0;
     }
-
-
-    public static <T> Function<T, QuadtreeIndex> quadTreeIndex(IndexConfiguration indexConfiguration, CoordinateTransform<T> coordinateTransform) {
-        return new QuadtreeIndexFunction<>(indexConfiguration, coordinateTransform);
-
-    }
-
-    private static class QuadtreeIndexFunction<T> implements Function<T, QuadtreeIndex> {
-        private final CoordinateTransform<T> coordinateTransform;
-        private final IndexConfiguration indexConfiguration;
-
-        public QuadtreeIndexFunction(IndexConfiguration indexConfiguration, CoordinateTransform<T> coordinateTransform) {
-            this.coordinateTransform = coordinateTransform;
-            this.indexConfiguration = indexConfiguration;
-        }
-
-        @Override
-        public QuadtreeIndex apply(T t) {
-            double[] coords = coordinateTransform.toCoordinate(t);
-            return new QuadtreeIndex(indexConfiguration, coords);
-        }
-    }
+    
 }

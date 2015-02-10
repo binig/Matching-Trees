@@ -49,7 +49,7 @@ public class QuadtreeIndexTest {
 
         TreeMap<QuadtreeIndex, ThreeDim> map = new TreeMap<>();
         IndexConfiguration indexConfiguration = new IndexConfiguration(new double[]{1, 1, 1}, new double[]{0, 0, 0}, 20, 5);
-        Function<ThreeDim, QuadtreeIndex> function = IndexUtils.quadTreeIndex(indexConfiguration, d -> d.getCoordinates());
+        Function<ThreeDim, QuadtreeIndex> function = QuadtreeBuilder.quadTreeIndex(indexConfiguration, d -> d.getCoordinates());
         Set<ThreeDim> objects = new HashSet<>();
         for (int i = 0; i < data.length; i++) {
             ThreeDim d = new ThreeDim(data[i]);
@@ -60,6 +60,32 @@ public class QuadtreeIndexTest {
         //System.out.println(tree);
         for (ThreeDim d : objects) {
             Assert.assertTrue(map.containsValue(d), " object " + i + " not found " + d);
+            i++;
+        }
+
+    }
+
+    @Test
+    public void randomSimpleThreeDimTestWithBuilder() {
+        double[][] data = new double[500][];
+        Random r = new Random();
+        for (int i = 0; i < data.length; i++) {
+            data[i] = new double[]{r.nextDouble(), r.nextDouble(), r.nextDouble()};
+        }
+
+        IndexConfiguration indexConfiguration = new IndexConfiguration(new double[]{1, 1, 1}, new double[]{0, 0, 0}, 20, 5);
+        RTree<QuadtreeIndex,ThreeDim> rTree = RTree.<ThreeDim>quadtreeBuilder().withConfiguration(indexConfiguration)
+                .withCoordinateTransform(d -> d.getCoordinates()).build();
+        Set<ThreeDim> objects = new HashSet<>();
+        for (int i = 0; i < data.length; i++) {
+            ThreeDim d = new ThreeDim(data[i]);
+            rTree.add(d);
+            objects.add(d);
+        }
+        int i = 0;
+        //System.out.println(tree);
+        for (ThreeDim d : objects) {
+            Assert.assertTrue(rTree.contains(d), " object " + i + " not found " + d);
             i++;
         }
 
